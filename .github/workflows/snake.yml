@@ -1,0 +1,29 @@
+name: Crimson Cosmic Snake
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/snake.yml'
+permissions:
+  contents: write
+jobs:
+  snake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/github-snake.svg?color_snake=%23ff5269&color_dots=%231e1726,%23511628,%2395203c,%23d63350,%23ff8795
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish animation
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
